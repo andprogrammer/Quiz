@@ -70,6 +70,7 @@ void CQuizDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_B, bButton);
 	DDX_Control(pDX, IDC_BUTTON_C, cButton);
 	DDX_Control(pDX, IDC_BUTTON_D, dButton);
+	DDX_Control(pDX, IDC_BUTTON_NEW_QUIZ, newQuizButton);
 }
 
 BEGIN_MESSAGE_MAP(CQuizDlg, CDialogEx)
@@ -80,6 +81,7 @@ BEGIN_MESSAGE_MAP(CQuizDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_B, &CQuizDlg::onButtonBClicked)
 	ON_BN_CLICKED(IDC_BUTTON_C, &CQuizDlg::onButtonCClicked)
 	ON_BN_CLICKED(IDC_BUTTON_D, &CQuizDlg::onButtonDClicked)
+	ON_BN_CLICKED(IDC_BUTTON_NEW_QUIZ, &CQuizDlg::onButtonNewQuizClicked)
 END_MESSAGE_MAP()
 
 
@@ -113,6 +115,8 @@ BOOL CQuizDlg::OnInitDialog()
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
+
+	setFont();
 
 	ShowWindow(SW_MINIMIZE);
 
@@ -170,6 +174,16 @@ HCURSOR CQuizDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+void CQuizDlg::setFont()
+{
+	font.CreateFont(16, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("Microsoft Sans Serif"));
+	aButton.SetFont(&font);
+	bButton.SetFont(&font);
+	cButton.SetFont(&font);
+	dButton.SetFont(&font);
+	newQuizButton.SetFont(&font);
+}
+
 bool CQuizDlg::checkAnswear() const
 {
 	if (currentQuestion >= quizEngine.getQuestions().size()) return false;
@@ -188,7 +202,9 @@ void CQuizDlg::generateNewQuestion()
 {
 	if (currentQuestion < quizEngine.getQuestions().size())
 	{
-		questionStaticText = quizEngine.getQuestions()[currentQuestion].getQuestion().c_str();
+		std::stringstream actualQuestion;
+		actualQuestion << currentQuestion + 1 << ") " << quizEngine.getQuestions()[currentQuestion].getQuestion();
+		questionStaticText = actualQuestion.str().c_str();
 
 		answearAStaticText = quizEngine.getQuestions()[currentQuestion].getAnswear1().c_str();
 		answearBStaticText = quizEngine.getQuestions()[currentQuestion].getAnswear2().c_str();
@@ -230,4 +246,14 @@ void CQuizDlg::onButtonCClicked()
 void CQuizDlg::onButtonDClicked()
 {
 	handleAnswear(Question::ANSWEAR::D);
+}
+
+void CQuizDlg::onButtonNewQuizClicked()
+{
+	currentQuestion = 0;
+	currentAnswear = Question::ANSWEAR::NONE;
+	score = 0;
+	updateScore();
+	generateNewQuestion();
+	UpdateData(FALSE);
 }

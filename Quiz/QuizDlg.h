@@ -41,16 +41,21 @@ private:
 	CString answearDStaticText;
 	CString scoreStaticText;
 
+	CEdit questionStaticTextStyle;
 	CButton aButton;
 	CButton bButton;
 	CButton cButton;
 	CButton dButton;
+	CButton newQuizButton;
+
+	CFont font;
 
 	std::uint16_t currentQuestion = 0;
 	Question::ANSWEAR currentAnswear = Question::ANSWEAR::NONE;
 	QuizEngine quizEngine;
 	std::uint16_t score = 0;
 
+	void setFont();
 	bool checkAnswear() const;
 	void updateScore();
 	void generateNewQuestion();
@@ -62,4 +67,5 @@ public:
 	afx_msg void onButtonBClicked();
 	afx_msg void onButtonCClicked();
 	afx_msg void onButtonDClicked();
+	afx_msg void onButtonNewQuizClicked();
 };
